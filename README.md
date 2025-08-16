@@ -49,10 +49,10 @@ In the following screenshots you can find examples of the data extracted/updated
 <table>
 <tr>
     <td align="center">
-        <a href="https://github.com/bonfa">
-            <img src="https://avatars.githubusercontent.com/u/790990?v=4" width="100;" alt="bonfa"/>
+        <a href="https://github.com/trancemartinez">
+            <img src="https://avatars.githubusercontent.com/u/144746145?v=4" width="100;" alt="trancemartinez"/>
             <br />
-            <sub><b>bonfa</b></sub>
+            <sub><b>trancemartinez</b></sub>
         </a>
     </td>
     <td align="center">
