@@ -13,41 +13,15 @@ on:
 jobs:
   build:      
     name: Build iOS
-    runs-on: macos 15
-    
+    runs-on: macos-15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Select latest Xcode version
-        run: |
-         LATEST_XCODE=$(ls /Applications | grep Xcode | sort -V | tail -n 1)
-         echo "Using $LATEST_XCODE"
-         sudo xcode-select -s /Applications/$LATEST_XCODE"
-
-      - name: Select latest iPhone simulator
-        run: |
-          DEST=$(xcrun simctl list devices available | grep "iPhone" | grep -v "unavailable" | tail -n 1 | awk -F '[()]' '{print $2}')
-          DEVICE_NAME=$(xcrun simctl list devices available | grep "iPhone" | grep -v "unavailable" | tail -n 1 | awk -F '(' '{print $1}' | xargs)
-          echo "Using simulator: $DEVICE_NAME ($DEST)"
-          echo "DESTINATION=platform=iOS Simulator,name=$DEVICE_NAME,OS=$DEST" >> $GITHUB_ENV
-        
+        uses: actions/checkout@v2
       - name: Build iOS framework
         run: |
-           set -o pipefail && xcodebuild 
-           -project ID3TagEditor.xcodeproj 
-           -scheme "ID3TagEditor iOS Tests" clean test 
-           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO 
-           -destination "$DESTINATION" 
-           -skipPackagePluginValidation | xcpretty
-           
+           set -o pipefail && xcodebuild -project ID3TagEditor.xcodeproj -scheme "ID3TagEditor iOS Tests" clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -destination "platform=iOS Simulator,name=iPhone 16,OS=18.1" -skipPackagePluginValidation | xcpretty
       - name: Build iOS Demo
         run: | 
-           set -o pipefail && xcodebuild 
-           -project Demo/Demo.xcodeproj 
-           -scheme "Demo iOS"  clean build 
-           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO 
-           -destination "$DESTINATION" 
-           -skipPackagePluginValidation | xcpretty
+           set -o pipefail && xcodebuild -project Demo/Demo.xcodeproj -scheme "Demo iOS"  clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -destination "platform=iOS Simulator,name=iPhone 16,OS=18.1" -skipPackagePluginValidation | xcpretty
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v1
