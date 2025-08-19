@@ -1,3 +1,4 @@
+
 name: Build iOS
 
 on:
@@ -17,26 +18,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Pull Valid Simulator
-        run: | 
-          DESTINATION=$(xcodebuild -project ID3TagEditor.xcodeproj \
-          -scheme "ID3TagEditor iOS Tests" \
-          -showdestinations | grep "platform:iOS Simulator" | head -n 1 | awk -F '{|}' '{print $2}')         
       - name: Build iOS framework
         run: |
-          set -o pipefail && xcodebuild \
-            -project ID3TagEditor.xcodeproj \
-            -scheme "ID3TagEditor iOS Tests" clean test \
-            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
-            -destination "$DESTINATION" \
-            -skipPackagePluginValidation | xcpretty
+           set -o pipefail && xcodebuild -project ID3TagEditor.xcodeproj -scheme "ID3TagEditor iOS Tests" clean test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -destination "platform=iOS Simulator" -skipPackagePluginValidation | xcpretty
       - name: Build iOS Demo
         run: | 
-           set -o pipefail && xcodebuild \
-           -project Demo/Demo.xcodeproj \
-           -scheme "Demo iOS"  clean build \
-           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
-           -destination "platform=iOS Simulator,name=iPhone 16,OS=18.1" \
-           -skipPackagePluginValidation | xcpretty 
+           set -o pipefail && xcodebuild -project Demo/Demo.xcodeproj -scheme "Demo iOS"  clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -destination "platform=iOS Simulator" -skipPackagePluginValidation | xcpretty
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
